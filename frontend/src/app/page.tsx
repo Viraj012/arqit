@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import ProjectForm from './components/ProjectForm';
-import OutputDisplay from './components/OutputDisplay';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRouter } from 'next/navigation';
 
 interface OutputFile {
   name: string;
@@ -13,8 +14,8 @@ interface OutputFile {
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
 
 export default function Home() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [generatedFiles, setGeneratedFiles] = useState<OutputFile[]>([]);
 
   const handleSubmit = async (projectDescription: string) => {
     setIsLoading(true);
@@ -34,25 +35,34 @@ export default function Home() {
         throw new Error(`API error: ${response.status}`);
       }
       
-      const data = await response.json();
-      setGeneratedFiles(data.files);
+      // In a real implementation, we might store the data in a global state
+      // or pass it through the router
+      router.push('/results');
+      
     } catch (error) {
       console.error('Error generating files:', error);
       // Display a simplified error to the user
       alert(`Error connecting to the backend server. Please make sure the backend is running on ${BACKEND_URL}`);
-    } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4">
+        {/* Navbar */}
+        <nav className="flex justify-between items-center mb-12 py-4 px-6 border-b">
+          <div className="text-2xl font-bold">Plan AI</div>
+          <div className="flex space-x-4">
+            {/* Placeholder for navigation items if needed */}
+          </div>
+        </nav>
+        
         <header className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-2 text-gray-800 dark:text-white">
-            PlanAI
+          <h1 className="text-4xl font-bold mb-2">
+            Plan AI
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
+          <p className="text-xl text-muted-foreground">
             Generate structured project files from your description.
           </p>
         </header>
@@ -62,20 +72,52 @@ export default function Home() {
           
           {isLoading && (
             <div className="mt-8 flex flex-col items-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              <p className="mt-4 text-gray-600 dark:text-gray-300">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+              <p className="mt-4 text-muted-foreground">
                 Generating your project files...
               </p>
             </div>
           )}
           
-          {!isLoading && generatedFiles.length > 0 && (
-            <OutputDisplay files={generatedFiles} />
-          )}
+          {/* Info Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full max-w-5xl">
+            <Card className="rounded-xl shadow-md">
+              <CardHeader>
+                <CardTitle>Project Planning</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Generate detailed project plans with structured files and organized tasks.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="rounded-xl shadow-md">
+              <CardHeader>
+                <CardTitle>Task Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Get a prioritized list of tasks with clear implementation steps.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="rounded-xl shadow-md">
+              <CardHeader>
+                <CardTitle>Technical Blueprint</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Receive a technical blueprint for your project with detailed specifications.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
         </main>
         
-        <footer className="mt-16 text-center text-gray-500 dark:text-gray-400 text-sm">
-          <p>© 2025 PlanAI. All rights reserved.</p>
+        <footer className="mt-16 text-center text-muted-foreground text-sm py-4">
+          <p>© 2025 Plan AI. All rights reserved.</p>
         </footer>
       </div>
     </div>
