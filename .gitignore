@@ -1,0 +1,107 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# General
+.DS_Store
+*.pem
+*.log
+Thumbs.db
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vscode/
+.idea/
+
+# Frontend dependencies
+frontend/node_modules/
+node_modules/
+.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Frontend build and caches
+frontend/.next/
+.next/
+frontend/out/
+out/
+frontend/.vercel/
+.vercel/
+frontend/.turbo/
+.turbo/
+frontend/build/
+build/
+frontend/dist/
+dist/
+frontend/coverage/
+coverage/
+frontend/.swc/
+.swc/
+frontend/tsconfig.tsbuildinfo
+tsconfig.tsbuildinfo
+frontend/next-env.d.ts
+next-env.d.ts
+
+# Backend dependencies
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.py[cod]
+backend/**/*.py[cod]
+backend/*$py.class
+backend/**/*$py.class
+backend/*.so
+backend/.Python
+backend/pip-log.txt
+backend/pip-delete-this-directory.txt
+backend/.env
+
+# Backend build and caches
+backend/build/
+backend/develop-eggs/
+backend/dist/
+backend/downloads/
+backend/eggs/
+backend/.eggs/
+backend/lib/
+backend/lib64/
+backend/parts/
+backend/sdist/
+backend/var/
+backend/wheels/
+backend/.installed.cfg
+backend/*.egg
+backend/htmlcov/
+backend/.tox/
+backend/.nox/
+backend/.pytest_cache/
+backend/.coverage
+backend/coverage/
+backend/.cache/
+backend/logs/
+backend/*.log
+
+# Virtual environments
+env/
+venv/
+ENV/
+
+# Temporary files
+*.swp
+*.swo
+*~
+temp/
+
+# Package lock files (uncomment if you want to ignore these)
+package-lock.json
+frontend/package-lock.json
+yarn.lock
+frontend/yarn.lock
+TASK.md
+PLAN.md
+start-dev.sh
+stop-dev.sh
+GIT_WORKFLOW.md
+

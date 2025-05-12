@@ -1,0 +1,15 @@
+{
+  "name": "planai-root",
+  "version": "1.0.0",
+  "description": "PlanAI Project - Root package.json",
+  "scripts": {
+    "start": "./start-dev.sh",
+    "stop": "./stop-dev.sh",
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && source venv/bin/activate && python main.py",
+    "install:all": "cd frontend && npm install && cd ../backend && pip install -r requirements.txt"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true
+}
