@@ -26,7 +26,7 @@ if not API_KEY:
     raise ValueError("GOOGLE_API_KEY environment variable not set")
 
 # Use the specified API URL from environment variables or use default
-API_URL = os.getenv("GEMINI_API_URL", 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent')
+API_URL = os.getenv("GEMINI_API_URL", 'https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent')
 
 class ProjectFile(BaseModel):
     name: str

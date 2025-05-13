@@ -35,8 +35,15 @@ export default function Home() {
         throw new Error(`API error: ${response.status}`);
       }
       
-      // In a real implementation, we might store the data in a global state
-      // or pass it through the router
+      // Parse the JSON response
+      const data = await response.json();
+      
+      // Store the response data in localStorage so it can be accessed by the results page
+      if (data && data.files) {
+        localStorage.setItem('planAiResults', JSON.stringify(data.files));
+      }
+      
+      // Navigate to the results page
       router.push('/results');
       
     } catch (error) {
