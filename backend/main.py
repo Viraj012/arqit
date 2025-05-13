@@ -6,7 +6,7 @@ import logging
 import os
 from dotenv import load_dotenv
 
-from gemini_service import generate_project_files
+from gemini_service import generate_project_files, edit_file_with_chat
 
 # Load environment variables
 load_dotenv()
@@ -46,6 +46,14 @@ class ProjectFile(BaseModel):
 
 class ProjectResponse(BaseModel):
     files: List[ProjectFile]
+    
+class ChatEditRequest(BaseModel):
+    file_name: str
+    file_content: str
+    chat_message: str
+    
+class ChatEditResponse(BaseModel):
+    updated_content: str
 
 @app.get("/")
 async def read_root():
@@ -69,6 +77,27 @@ async def generate(request: ProjectRequest):
         raise HTTPException(
             status_code=500, 
             detail=f"Error generating project files: {str(e)}. Check if the Google API key is valid and properly set in the .env file."
+        )
+
+@app.post("/chat-edit", response_model=ChatEditResponse)
+async def chat_edit(request: ChatEditRequest):
+    try:
+        logger.info(f"Received chat edit request for file: {request.file_name}")
+        
+        # Call the Gemini service to edit the file based on the chat message
+        updated_content = await edit_file_with_chat(
+            file_name=request.file_name,
+            file_content=request.file_content,
+            chat_message=request.chat_message
+        )
+        
+        return ChatEditResponse(updated_content=updated_content)
+    except Exception as e:
+        logger.error(f"Error editing file with chat: {str(e)}")
+        # Include the error details in the response
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Error editing file with chat: {str(e)}. Check if the Google API key is valid and properly set in the .env file."
         )
 
 if __name__ == "__main__":

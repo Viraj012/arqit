@@ -111,13 +111,51 @@ async def generate_project_files(description: str) -> List[Dict[str, str]]:
         
         # Create ProjectFile objects as dictionaries instead of objects
         files = [
+            {"name": "blueprint.md", "content": blueprint},
             {"name": "plan.md", "content": plan},
             {"name": "tasks.md", "content": tasks},
-            {"name": "blueprint.md", "content": blueprint}
         ]
         
         logger.info(f"Successfully generated {len(files)} files")
         return files
     except Exception as e:
         logger.error(f"Error generating project files: {str(e)}")
+        raise
+
+async def edit_file_with_chat(file_name: str, file_content: str, chat_message: str) -> str:
+    """
+    Edit a file based on a chat message using the Google Gemini API.
+    
+    Args:
+        file_name: The name of the file to edit (e.g., 'plan.md')
+        file_content: The current content of the file
+        chat_message: The user's chat message with instructions for editing
+        
+    Returns:
+        The updated file content
+    """
+    try:
+        # Create a prompt for editing the file
+        prompt = f"""
+        You are an AI assistant helping to edit a markdown file named '{file_name}'.
+        
+        CURRENT FILE CONTENT:
+        ```markdown
+        {file_content}
+        ```
+        
+        USER REQUEST:
+        {chat_message}
+        
+        Please provide the complete updated content of the file with the requested changes.
+        Only return the updated markdown content, nothing else.
+        """
+        
+        # Generate the updated content
+        updated_content = await generate_with_gemini(prompt)
+        
+        logger.info(f"Successfully edited {file_name} based on chat message")
+        return updated_content
+    except Exception as e:
+        logger.error(f"Error editing file with chat: {str(e)}")
         raise

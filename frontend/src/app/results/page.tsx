@@ -21,6 +21,10 @@ export default function ResultsPage() {
   const [activeTab, setActiveTab] = useState(0);
   const [chatInput, setChatInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const [editedFiles, setEditedFiles] = useState<Set<number>>(new Set());
+  const [lastEditTime, setLastEditTime] = useState<number>(Date.now());
 
   // Load data from localStorage when component mounts
   useEffect(() => {
@@ -78,11 +82,79 @@ export default function ResultsPage() {
     URL.revokeObjectURL(url);
   };
 
-  const handleChatSubmit = (e: React.FormEvent) => {
+  const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder for chat functionality
-    console.log(`Submitted chat for ${files[activeTab]?.name}: ${chatInput}`);
-    setChatInput('');
+    
+    if (!chatInput.trim() || !files[activeTab]) return;
+    
+    try {
+      setIsChatLoading(true);
+      setChatError(null);
+      
+      const currentFile = files[activeTab];
+      
+      // Make API call to the chat-edit endpoint
+      const response = await fetch(`${BACKEND_URL}/chat-edit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          file_name: currentFile.name,
+          file_content: currentFile.content,
+          chat_message: chatInput
+        }),
+        mode: 'cors',
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      // Parse the response
+      const data = await response.json();
+      
+      // Get the updated content and ensure it's properly formatted
+      let updatedContent = data.updated_content;
+      
+      // Remove any markdown code block markers that might be in the response
+      updatedContent = updatedContent.replace(/^```markdown\s*|\s*```$/g, '');
+      
+      // Trim any leading/trailing whitespace
+      updatedContent = updatedContent.trim();
+      
+      // Update the file content with the edited content
+      const updatedFiles = [...files];
+      updatedFiles[activeTab] = {
+        ...updatedFiles[activeTab],
+        content: updatedContent
+      };
+      
+      // Update the files state
+      setFiles(updatedFiles);
+      
+      // Mark this file as edited
+      const newEditedFiles = new Set(editedFiles);
+      newEditedFiles.add(activeTab);
+      setEditedFiles(newEditedFiles);
+      
+      // Update timestamp to force MarkdownViewer refresh
+      setLastEditTime(Date.now());
+      
+      // Update localStorage with the new files
+      localStorage.setItem('planAiResults', JSON.stringify(updatedFiles));
+      
+      // Clear the chat input
+      setChatInput('');
+      
+      // Show success message
+      console.log('Successfully edited file:', files[activeTab]?.name);
+    } catch (error) {
+      console.error('Error editing file with chat:', error);
+      setChatError('Failed to edit file. Please try again.');
+    } finally {
+      setIsChatLoading(false);
+    }
   };
 
   return (
@@ -142,35 +214,63 @@ export default function ResultsPage() {
               {/* File Content Area - This will take remaining height and scroll independently */}
               <div className="flex-1 overflow-auto p-6 bg-gray-100">
                 {files.length > 0 && (
-                  <MarkdownViewer content={files[activeTab]?.content || ''} />
+                  <div>
+                    {editedFiles.has(activeTab) && (
+                      <div className="mb-4 p-2 bg-green-50 text-green-700 rounded-md text-sm flex items-center">
+                        <div className="mr-2 h-2 w-2 rounded-full bg-green-500" />
+                        <span>This file has been edited using AI</span>
+                      </div>
+                    )}
+                    {/* Using key prop to force re-render when content changes */}
+                    <MarkdownViewer 
+                      key={`${activeTab}-${lastEditTime}`} 
+                      content={files[activeTab]?.content || ''} 
+                    />
+                  </div>
                 )}
               </div>
 
               {/* Chat Input - Fixed at bottom */}
               <div className="border-t p-4 bg-white">
+                {chatError && (
+                  <div className="mb-3 p-2 bg-red-50 text-red-600 rounded-md text-sm">
+                    {chatError}
+                  </div>
+                )}
                 <form onSubmit={handleChatSubmit} className="flex space-x-2">
                   <Input
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     placeholder="Chat to edit this file..."
                     className="flex-1"
+                    disabled={isChatLoading}
                   />
-                  <Button type="submit">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="m22 2-7 20-4-9-9-4Z" />
-                      <path d="M22 2 11 13" />
-                    </svg>
+                  <Button 
+                    type="submit" 
+                    disabled={isChatLoading || !files.length}
+                  >
+                    {isChatLoading ? (
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-t-transparent border-white" />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m22 2-7 20-4-9-9-4Z" />
+                        <path d="M22 2 11 13" />
+                      </svg>
+                    )}
                   </Button>
                 </form>
+                <p className="mt-2 text-xs text-gray-500">
+                  Ask the AI to make changes to the current file. For example: "Add a new section about deployment" or "Reorganize the tasks".
+                </p>
               </div>
             </div>
           </div>
