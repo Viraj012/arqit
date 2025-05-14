@@ -269,7 +269,7 @@ export default function ResultsPage() {
                   </Button>
                 </form>
                 <p className="mt-2 text-xs text-gray-500">
-                  Ask the AI to make changes to the current file. For example: "Add a new section about deployment" or "Reorganize the tasks".
+                  Ask the AI to make changes to the current file. For example: &quot;Add a new section about deployment&quot; or &quot;Reorganize the tasks&quot;.
                 </p>
               </div>
             </div>

@@ -33,38 +33,39 @@ export default function ProjectForm({ onSubmit, isLoading }: ProjectFormProps) {
   };
 
   return (
-    <div className="w-full max-w-2xl">
-      <Card className="bg-white dark:bg-gray-800 shadow-md rounded-xl p-6">
-        <CardHeader className="pb-4 text-center">
-          <CardTitle className="text-2xl font-bold">Project Description</CardTitle>
-        </CardHeader>
-        
-        <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="mb-6">
-              <Textarea
-                id="projectDescription"
-                className={`min-h-[150px] resize-none ${error ? 'border-red-500 ring-red-500/20' : ''}`}
-                placeholder="Enter your project idea here..."
-                value={projectDescription}
-                onChange={(e) => setProjectDescription(e.target.value)}
-              />
-              {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
-            </div>
-            
-            <div className="flex items-center justify-center">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                size="lg"
-                className="font-bold"
-              >
-                {isLoading ? 'Generating...' : 'Generate'}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+    <Card className="bg-white/5 dark:bg-gray-800/20 backdrop-blur-sm shadow-lg border border-foreground/5 rounded-xl">
+      <CardHeader className="pb-2 text-center">
+        <CardTitle className="text-xl font-bold">Describe Your Project</CardTitle>
+      </CardHeader>
+      
+      <CardContent>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-6">
+            <Textarea
+              id="projectDescription"
+              className={`min-h-[150px] resize-none bg-white/10 dark:bg-gray-800/30 backdrop-blur-sm border-foreground/10 focus:border-foreground/20 focus:ring-foreground/10 ${error ? 'border-red-500 ring-red-500/20' : ''}`}
+              placeholder="Example: I want to build a React and Node.js web application for project management with user authentication, task tracking, and file uploading..."
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
+            />
+            {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+          </div>
+          
+          <div className="flex items-center justify-center">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              size="lg"
+              className="font-bold relative overflow-hidden group rounded-xl"
+            >
+              <span className="relative z-10">
+                {isLoading ? 'Generating...' : 'Generate Project Files'}
+              </span>
+              <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

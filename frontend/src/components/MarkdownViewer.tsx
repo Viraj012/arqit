@@ -46,7 +46,7 @@ export default function MarkdownViewer({ content }: MarkdownViewerProps) {
     )}>
       <ReactMarkdown
         components={{
-          code({ inline, className, children, ...props }: any) {
+          code({ inline, className, children, ...props }: React.ComponentPropsWithoutRef<'code'> & { inline?: boolean }) {
             const match = /language-(\w+)/.exec(className || '');
             const language = match ? match[1] : '';
             return !inline && language ? (
@@ -57,6 +57,7 @@ export default function MarkdownViewer({ content }: MarkdownViewerProps) {
                   </div>
                 )}
                 <SyntaxHighlighter
+                  // @ts-expect-error - Type issue with react-syntax-highlighter styles
                   style={isDark ? vscDarkPlus : vs}
                   language={language}
                   PreTag="div"
@@ -109,6 +110,9 @@ export default function MarkdownViewer({ content }: MarkdownViewerProps) {
             );
           },
           img({ src, alt }) {
+            // Using a native img for simplicity with markdown images
+            // Next/Image requires dimensions which we don't have for markdown images
+            /* eslint-disable-next-line @next/next/no-img-element */
             return (
               <img 
                 src={src || ''} 
