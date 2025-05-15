@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { TextShimmer } from "./TextShimmer";
+import { TextShimmer } from "../../components/TextShimmer";
 import Link from "next/link";
 
 const FAQSection = () => {
@@ -44,14 +44,14 @@ const FAQSection = () => {
   ]);
 
   return (
-    <section id="faq" className="py-16">
-      <div className="container mx-auto px-4 space-y-12">
+    <section id="faq" className="py-8 sm:py-12 md:py-16">
+      <div className="container mx-auto px-4 space-y-8 sm:space-y-10 md:space-y-12">
         {/* Header */}
         <div className="text-center">
-          <TextShimmer className="font-montserrat text-6xl/relaxed font-bold">
+          <TextShimmer className="font-montserrat text-3xl/tight sm:text-4xl/normal md:text-5xl/relaxed lg:text-6xl/relaxed font-bold">
             Frequently Asked Questions
           </TextShimmer>
-          <p className="mb-6 text-neutral-100/60">
+          <p className="mt-2 mb-4 sm:mb-6 text-sm sm:text-base text-neutral-100/60 max-w-xl mx-auto">
             Everything you need to know about arqit
           </p>
         </div>
@@ -60,7 +60,7 @@ const FAQSection = () => {
         <Accordion
           type="single"
           collapsible
-          className="mx-auto w-full lg:max-w-3xl"
+          className="mx-auto w-full max-w-xs sm:max-w-xl md:max-w-2xl lg:max-w-3xl"
         >
           {faqItems.map((item) => (
             <AccordionItem
@@ -68,26 +68,26 @@ const FAQSection = () => {
               value={item.id}
               className="border-b border-neutral-700"
             >
-              <AccordionTrigger className="flex items-center transition-opacity duration-200 hover:no-underline hover:opacity-70 py-4">
-                <div className="font-medium sm:py-1 lg:py-2 lg:text-lg text-neutral-200">
+              <AccordionTrigger className="flex items-center transition-opacity duration-200 hover:no-underline hover:opacity-70 py-3 sm:py-4">
+                <div className="font-medium text-sm sm:text-base md:text-lg text-neutral-200 text-left">
                   {item.question}
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="sm:mb-1 lg:mb-2 text-neutral-400">
-                <div className="lg:text-lg pb-4">{item.answer}</div>
+              <AccordionContent className="text-sm sm:text-base md:text-lg text-neutral-400">
+                <div className="pb-3 sm:pb-4">{item.answer}</div>
               </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
 
         {/* Support Section - Modified: Added gradient bg and shortened text with bigger font */}
-        <div className="mx-auto flex max-w-4xl flex-col items-center rounded-lg bg-gradient-to-br from-neutral-800 to-neutral-900 p-8 text-center">
-          <TextShimmer className="font-montserrat text-4xl/relaxed font-semibold mb-8">
+        <div className="mx-auto flex max-w-xs sm:max-w-xl md:max-w-2xl lg:max-w-4xl flex-col items-center rounded-md sm:rounded-lg bg-gradient-to-br from-neutral-800 to-neutral-900 p-6 sm:p-8 text-center">
+          <TextShimmer className="font-montserrat text-2xl/tight sm:text-3xl/normal md:text-4xl/relaxed font-semibold mb-4 sm:mb-6 md:mb-8">
             Build your app today
           </TextShimmer>
 
           <div className="flex w-full flex-col justify-center gap-2 sm:flex-row">
-            <Button className="w-full sm:w-auto bg-neutral-200 text-neutral-900 hover:bg-neutral-300">
+            <Button className="w-full sm:w-auto px-4 py-2 text-sm sm:text-base bg-neutral-200 text-neutral-900 hover:bg-neutral-300">
               <Link href="/">Get Started</Link>
             </Button>
           </div>
